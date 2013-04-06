@@ -7,8 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E29A444717104FA200BA259B /* logic.c in Sources */ = {isa = PBXBuildFile; fileRef = E29A444617104FA200BA259B /* logic.c */; };
 		E2BD2892170ADF7500375C86 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = E2BD2891170ADF7500375C86 /* main.c */; };
 		E2BD2894170ADF7500375C86 /* domino.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = E2BD2893170ADF7500375C86 /* domino.1 */; };
+		E2BD289B170AE0F400375C86 /* drawing.c in Sources */ = {isa = PBXBuildFile; fileRef = E2BD289A170AE0F400375C86 /* drawing.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,9 +27,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		E29A4445171046E300BA259B /* drawing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = drawing.h; sourceTree = "<group>"; };
+		E29A444617104FA200BA259B /* logic.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = logic.c; sourceTree = "<group>"; };
+		E29A444817104FB200BA259B /* logic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = logic.h; sourceTree = "<group>"; };
+		E29A44491710508A00BA259B /* macros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = macros.h; sourceTree = "<group>"; };
 		E2BD288E170ADF7500375C86 /* domino */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = domino; sourceTree = BUILT_PRODUCTS_DIR; };
 		E2BD2891170ADF7500375C86 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		E2BD2893170ADF7500375C86 /* domino.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = domino.1; sourceTree = "<group>"; };
+		E2BD289A170AE0F400375C86 /* drawing.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = drawing.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,8 +67,13 @@
 		E2BD2890170ADF7500375C86 /* domino */ = {
 			isa = PBXGroup;
 			children = (
-				E2BD2891170ADF7500375C86 /* main.c */,
 				E2BD2893170ADF7500375C86 /* domino.1 */,
+				E2BD289A170AE0F400375C86 /* drawing.c */,
+				E29A4445171046E300BA259B /* drawing.h */,
+				E29A444617104FA200BA259B /* logic.c */,
+				E29A444817104FB200BA259B /* logic.h */,
+				E29A44491710508A00BA259B /* macros.h */,
+				E2BD2891170ADF7500375C86 /* main.c */,
 			);
 			path = domino;
 			sourceTree = "<group>";
@@ -118,6 +130,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				E2BD2892170ADF7500375C86 /* main.c in Sources */,
+				E2BD289B170AE0F400375C86 /* drawing.c in Sources */,
+				E29A444717104FA200BA259B /* logic.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -216,6 +230,7 @@
 				E2BD2899170ADF7500375C86 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
