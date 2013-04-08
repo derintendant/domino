@@ -117,7 +117,7 @@ void drawDomino(int left, int right, int orientation) {
 				break;
 		}
 		CURDOWN(1);
-		CURRIGHT(1);
+		CURLEFT(1);
 		switch (right) {
 			case 0:
 				printf("\u2610");
@@ -144,4 +144,115 @@ void drawDomino(int left, int right, int orientation) {
 				break;
 		}
 	}
+	
+	if (orientation == 2) {
+		switch (left) {
+			case 0:
+				printf("\u2610");
+				break;
+			case 1:
+				printf("\u2680");
+				break;
+			case 2:
+				printf("\u2681");
+				break;
+			case 3:
+				printf("\u2682");
+				break;
+			case 4:
+				printf("\u2683");
+				break;
+			case 5:
+				printf("\u2684");
+				break;
+			case 6:
+				printf("\u2685");
+				break;
+			default:
+				break;
+		}
+		CURLEFT(2);
+		switch (right) {
+			case 0:
+				printf("\u2610");
+				break;
+			case 1:
+				printf("\u2680");
+				break;
+			case 2:
+				printf("\u2681");
+				break;
+			case 3:
+				printf("\u2682");
+				break;
+			case 4:
+				printf("\u2683");
+				break;
+			case 5:
+				printf("\u2684");
+				break;
+			case 6:
+				printf("\u2685");
+				break;
+			default:
+				break;
+		}
+	}
+	
+	if (orientation == 3) {
+		switch (left) {
+			case 0:
+				printf("\u2610");
+				break;
+			case 1:
+				printf("\u2680");
+				break;
+			case 2:
+				printf("\u2681");
+				break;
+			case 3:
+				printf("\u2682");
+				break;
+			case 4:
+				printf("\u2683");
+				break;
+			case 5:
+				printf("\u2684");
+				break;
+			case 6:
+				printf("\u2685");
+				break;
+			default:
+				break;
+		}
+		CURUP(1);
+		CURLEFT(1);
+		switch (right) {
+			case 0:
+				printf("\u2610");
+				break;
+			case 1:
+				printf("\u2680");
+				break;
+			case 2:
+				printf("\u2681");
+				break;
+			case 3:
+				printf("\u2682");
+				break;
+			case 4:
+				printf("\u2683");
+				break;
+			case 5:
+				printf("\u2684");
+				break;
+			case 6:
+				printf("\u2685");
+				break;
+			default:
+				break;
+		}
+	}
+	GOTO(18, 50);
+
 }
