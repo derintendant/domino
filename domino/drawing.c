@@ -8,8 +8,12 @@
 																		
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 #include "drawing.h"
 #include "macros.h"
+#include "vars.h"
+#include "logic.h"
 
 void initBoard(void) {
 	CLS;
@@ -148,7 +152,7 @@ void drawDomino(int left, int right, int orientation) {
 	if (orientation == 2) {
 		switch (left) {
 			case 0:
-				printf("\u2610");
+				printf("\u9633");
 				break;
 			case 1:
 				printf("\u2680");
@@ -254,5 +258,34 @@ void drawDomino(int left, int right, int orientation) {
 		}
 	}
 	GOTO(18, 50);
+}
+
+void drawPlayerStack(void) {
+		// Spieler 1
+	for (int i = 0; i <= 27; i++) {
+		if (player1.domino[i] != -1) {
+			if (i < 10) {
+				GOTO(3+i, 7);
+				drawDomino((int)(player1.domino[i] / 10), player1.domino[i] % 10, 0);
+			} else {
+				GOTO(i-7, 4);
+				drawDomino((int)(player1.domino[i] / 10), player1.domino[i] % 10, 0);
+			}
+		}
+		
+	}
+	
+		// Spieler 2
+	for (int i = 0; i <= 27; i++) {
+		if (player2.domino[i] != -1) {
+			if (i < 10) {
+				GOTO(3+i, 42);
+				drawDomino((int)(player2.domino[i] / 10), player2.domino[i] % 10, 0);
+			} else {
+				GOTO(i-7, 45);
+				drawDomino((int)(player1.domino[i] / 10), player1.domino[i] % 10, 0);
+			}
+		}
+	}
 
 }

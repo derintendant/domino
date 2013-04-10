@@ -27,6 +27,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		E268D17C1716004A006CCFC8 /* vars.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vars.h; sourceTree = "<group>"; };
 		E29A4445171046E300BA259B /* drawing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = drawing.h; sourceTree = "<group>"; };
 		E29A444617104FA200BA259B /* logic.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = logic.c; sourceTree = "<group>"; };
 		E29A444817104FB200BA259B /* logic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = logic.h; sourceTree = "<group>"; };
@@ -73,6 +74,7 @@
 				E29A444617104FA200BA259B /* logic.c */,
 				E29A444817104FB200BA259B /* logic.h */,
 				E29A44491710508A00BA259B /* macros.h */,
+				E268D17C1716004A006CCFC8 /* vars.h */,
 				E2BD2891170ADF7500375C86 /* main.c */,
 			);
 			path = domino;

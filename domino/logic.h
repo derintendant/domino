@@ -8,14 +8,18 @@
 
 #ifndef domino_logic_h
 #define domino_logic_h
-struct Player initPlayer(int);
-void initGame(int[28]);
 
 typedef struct Player {
 	char name[9];
 	int score;
 	int domino[28];
 } Player ;
+
+struct Player initPlayer(int);
+void initGame(int[28]);
+void initNewRound(void);
+int *playRound(void);
+
 
 
 #endif

@@ -9,6 +9,7 @@
 #ifndef domino_macros_h
 #define domino_macros_h
 
+#define EMPTY			printf("                                                  ")
 #define CLS				printf("\e[2J")				// Bildschirm löschen
 #define CURUP(x)		printf("\e[%dA", x)			// Cursor x Zeilen nach oben verschieben
 #define CURDOWN(x)		printf("\e[%dB", x)			// Cursor x Zeilen nach unten verschieben

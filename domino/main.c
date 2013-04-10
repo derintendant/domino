@@ -10,23 +10,48 @@
 #include "drawing.h"
 #include "logic.h"
 #include "macros.h"
+#include "vars.h"
 
-int stack[28];
+int stack[28] = {0}, ergebnisGesamt[2][5] = {0}, *ergebnis;
+struct Player player1 = {.name = {0}, .score = 0, .domino = {0}};
+struct Player player2 = {.name = {0}, .score = 0, .domino = {0}};
 
 int main(int argc, const char * argv[])
 {
-	
-	
 	initBoard();									// Spielfeld zeichnen
-	struct Player player1 = initPlayer(1);			// Spieler Eins initialisieren
-	struct Player player2 = initPlayer(2);			// Spieler Zwei Initialisieren
-	initGame(stack);								// Steinstapel initialisieren
+	player1 = initPlayer(1);						// Spieler Eins initialisieren
+	player2 = initPlayer(2);						// Spieler Zwei Initialisieren
 	
-    GOTO(10,4);
-	drawDomino(4, 3, 0);
+	initGame(stack);
+	initNewRound();
 	
+		// BEGIN Scoring
 	
+	ergebnis = playRound();
+	ergebnisGesamt[0][0] += ergebnis[0];
+	ergebnisGesamt[0][4] += ergebnis[0];
+	ergebnisGesamt[1][0] += ergebnis[1];
+	ergebnisGesamt[1][4] += ergebnis[1];
 	
+	ergebnis = playRound();
+	ergebnisGesamt[0][1] += ergebnis[0];
+	ergebnisGesamt[0][4] += ergebnis[0];
+	ergebnisGesamt[1][1] += ergebnis[1];
+	ergebnisGesamt[1][4] += ergebnis[1];
+	
+	ergebnis = playRound();
+	ergebnisGesamt[0][2] += ergebnis[0];
+	ergebnisGesamt[0][4] += ergebnis[0];
+	ergebnisGesamt[1][2] += ergebnis[1];
+	ergebnisGesamt[1][4] += ergebnis[1];
+	
+	ergebnis = playRound();
+	ergebnisGesamt[0][3] += ergebnis[0];
+	ergebnisGesamt[0][4] += ergebnis[0];
+	ergebnisGesamt[1][3] += ergebnis[1];
+	ergebnisGesamt[1][4] += ergebnis[1];
+	
+		// END Scoring
 	
 	
     return 0;

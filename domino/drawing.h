@@ -11,5 +11,6 @@
 
 void initBoard(void);
 void drawDomino(int, int, int);
+void drawPlayerStack(void);
 
 #endif
