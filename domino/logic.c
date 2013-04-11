@@ -19,7 +19,7 @@ struct Player initPlayer(int number) {
 	struct Player player;
 	
 	GOTO(18,1);
-	printf("Spieler %d: Bitte Name eingeben: ", number);
+	printf("Spieler %d: Bitte Name eingeben", number);
 	COLOR(33);
 	if (number == 1) {
 		GOTO(1,1);
@@ -29,10 +29,10 @@ struct Player initPlayer(int number) {
 		GOTO(1,41);
 		scanf("%s", &player.name[0]);
 	}
-	GOTO(1, 10);
+	GOTO(1, 11);
 	COLOR(30);
-	printf("###############################\n");
-	printf("         #                             #         ");
+	          printf("++++++++++++++++++++++++++++++\n");
+	printf("          +                            +         ");
 	for (int i = 0; i <= 27; i++) {
 		player.domino[i] = -1;
 	}
@@ -103,29 +103,284 @@ void initNewRound(void) {
 	drawPlayerStack();
 	
 	int firstDominoIndex = ((int)random() % 26);
-	while (stack[firstDominoIndex] == -1 || firstDominoIndex == 0) {
-		firstDominoIndex = ((int)random() % 26);
-	}
 	int firstDomino = stack[firstDominoIndex];
+	while (stack[firstDominoIndex] == -1 || firstDomino % 11 == 0) {
+		firstDominoIndex = ((int)random() % 26);
+		firstDomino = stack[firstDominoIndex];
+	}
 	stack[firstDominoIndex] = -1;
 	
-	GOTO(9, 24);
+	GOTO((4 * gameRound - 2), 25);
 	COLOR(31);
 	drawDomino((int)(firstDomino / 10), firstDomino % 10, 0);
+	edge1 = (int)(firstDomino / 10);
+	edge2 = (firstDomino % 10);
 }
 
 int *playRound(void) {
-	int next;
 	int *ergebnis = malloc(2*sizeof(int));
 	
-	GOTO(18, 1);
-	COLOR(32);
-	printf("Nächster Zug?");
-	scanf("%d", &next);
-	GOTO(18, 1);
+	int currentPlayer = 1;
+	if (gameRound == 2 || gameRound == 4) {
+		currentPlayer = 2;
+	}
+	while (1) {						// Abbruchbedingungen für Runde
+		nextTurn(currentPlayer);
+		switch (currentPlayer) {
+			case 1:
+				currentPlayer = 2;
+				break;
+			case 2:
+				currentPlayer = 1;
+			default:
+				break;
+		}
+	}
 	
 	ergebnis[0] = 6;
 	ergebnis[1] = 8;
 	
 	return ergebnis;
+}
+
+void nextTurn(int currentPlayer) {
+	int next = -1, possibleDominos[28] = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, links, rechts;
+	COMMAND;
+	COLOR(32);
+	printf("Spieler %d: Welchen Stein legen?                   ", currentPlayer);
+	CURLEFT(17);
+	
+	if (currentPlayer == 1) {
+		for (int i = 0; i <= 27; i++) {
+			links = (int)(player1.domino[i] / 10);
+			rechts = (player1.domino[i] % 10);
+			if ((player1.domino[i] != -1) && ((links == edge1)  ||  (rechts == edge1)  ||  (links == edge2)  ||  (rechts == edge2))){
+				int j = 0;
+				while (possibleDominos[j] != -1) {
+					j++;
+				}
+				possibleDominos[j] = i;
+				printf("%d, ", i);
+			}
+		}
+		
+		CURLEFT(2);
+		printf("  ");
+
+		int ok = 0, i = 0;
+		while (ok != 1) {			
+			GOTO(2, 1);
+			printf(" ");
+			CURLEFT(1);
+			scanf("%d", &next);
+			for (i = 0; i <= 27; i++) {
+				if (next == possibleDominos[i]) {
+					ok = 1;
+					GOTO(2, 1);
+					printf(" ");
+					player1.domino[next] = -1;
+					drawPlayerStack();
+				}
+			}
+			
+		}
+		if (edge1 == edge2) {
+			COMMAND;
+			printf("Wo soll angelegt werden?");
+			char choice = 'x';
+			while (choice != 'l' && choice != 'r') {
+				GOTO(2, 42);
+				scanf("%c", &choice);
+			}
+			switch (choice) {
+				case 'l':
+					drawDomino((int)(next / 10), (next % 10), nextPlacement[0]);
+					if (nextPlacement[0] == 0) {
+						nextPlacement[0] = 28;
+					} else {
+						nextPlacement[0]--;
+					}
+					break;
+				case 'r':
+					drawDomino((int)(next / 10), (next % 10), nextPlacement[1]);
+					if (nextPlacement[1] == 28) {
+						nextPlacement[1] = 0;
+					} else {
+						nextPlacement[1]++;
+					}
+					break;
+				default:
+					break;
+			}
+		} else {
+			if ((int)(next / 10) == edge1 ) {
+				if (nextPlacement[0] > 0 && nextPlacement[0] < 7) {
+					GOTO((4 * gameRound -2), 2 * nextPlacement[0] + 11);
+					drawDomino(next % 10, (int)(next / 10), 0);
+					nextPlacement[0]--;
+				}
+				if (nextPlacement[0] > 7 && nextPlacement[0] < 14) {
+					GOTO((4 * gameRound -2), 2 * nextPlacement[0] + 11);
+					drawDomino((int)(next / 10), next % 10, 0);
+					nextPlacement[0]--;
+				}
+				if (nextPlacement[0] == 0) {
+					GOTO((4 * gameRound -2), 12);
+					drawDomino((int)(next / 10), (next % 10), 1);
+					nextPlacement[0] = 28;
+				}
+				if (nextPlacement[0] == 14) {
+					GOTO((4 * gameRound -2), 39);
+					drawDomino((next % 10), (int)(next / 10), 1);
+					nextPlacement[0] = 28;
+				}
+				if (nextPlacement[0] <= 28 && nextPlacement[0] >= 15) {
+					GOTO((4 * gameRound), (68 - 2 * nextPlacement[0]));
+					drawDomino(next % 10, (int)(next / 10), 0);
+					nextPlacement[0]--;
+				}
+				edge1 = next % 10;
+			}
+			if ((next % 10) == edge1 ) {
+				if (nextPlacement[0] > 0 && nextPlacement[0] < 7) {
+					GOTO((4 * gameRound -2), 2 * nextPlacement[0] + 11);
+					drawDomino((int)(next / 10), next % 10, 0);
+					nextPlacement[0]--;
+				}
+				if (nextPlacement[0] > 7 && nextPlacement[0] < 14) {
+					GOTO((4 * gameRound -2), 2 * nextPlacement[0] + 11);
+					drawDomino(next % 10, (int)(next / 10), 0);
+					nextPlacement[0]--;
+				}
+				if (nextPlacement[0] == 0) {
+					GOTO((4 * gameRound -2), 12);
+					drawDomino((next % 10), (int)(next / 10), 1);
+					nextPlacement[0] = 28;
+				}
+				if (nextPlacement[0] == 14) {
+					GOTO((4 * gameRound -2), 39);
+					drawDomino((int)(next / 10), (next % 10), 1);
+					nextPlacement[0] = 28;
+				}
+				if (nextPlacement[0] <= 28 && nextPlacement[0] >= 15) {
+					GOTO((4 * gameRound), 2 * nextPlacement[0] + 11);
+					drawDomino((int)(next / 10), next % 10, 0);
+					nextPlacement[0]--;
+				}
+				edge1 = (int)(next / 10);
+			}
+			
+			if ((int)(next / 10) == edge2 ) {
+				if (nextPlacement[1] > 0 && nextPlacement[1] < 7) {
+					GOTO((4 * gameRound -2), 2 * nextPlacement[1] + 11);
+					drawDomino((int)(next / 10), next % 10, 0);
+					nextPlacement[1]--;
+				}
+				if (nextPlacement[1] > 7 && nextPlacement[1] < 14) {
+					GOTO((4 * gameRound -2), 2 * nextPlacement[1] + 11);
+					drawDomino(next % 10, (int)(next / 10), 0);
+					nextPlacement[1]--;
+				}
+				if (nextPlacement[1] == 0) {
+					GOTO((4 * gameRound -2), 12);
+					drawDomino((next % 10), (int)(next / 10), 1);
+					nextPlacement[1] = 28;
+				}
+				if (nextPlacement[1] == 14) {
+					GOTO((4 * gameRound -2), 39);
+					drawDomino((int)(next / 10), (next % 10), 1);
+					nextPlacement[1] = 28;
+				}
+				if (nextPlacement[1] <= 28 && nextPlacement[1] >= 15) {
+					GOTO((4 * gameRound), (68 - 2 * nextPlacement[1]));
+					drawDomino((int)(next / 10), next % 10, 0);
+					nextPlacement[1]--;
+				}
+				edge1 = next % 10;
+			}
+			if ((next % 10) == edge2 ) {
+				if (nextPlacement[1] > 0 && nextPlacement[1] < 7) {
+					GOTO((4 * gameRound -2), 2 * nextPlacement[1] + 11);
+					drawDomino(next % 10, (int)(next / 10), 0);
+					nextPlacement[1]--;
+				}
+				if (nextPlacement[1] > 7 && nextPlacement[1] < 14) {
+					GOTO((4 * gameRound -2), 2 * nextPlacement[1] + 11);
+					drawDomino((int)(next / 10), next % 10, 0);
+					nextPlacement[1]--;
+				}
+				if (nextPlacement[1] == 0) {
+					GOTO((4 * gameRound -2), 12);
+					drawDomino((int)(next / 10), (next % 10), 1);
+					nextPlacement[1] = 28;
+				}
+				if (nextPlacement[1] == 14) {
+					GOTO((4 * gameRound -2), 39);
+					drawDomino((next % 10), (int)(next / 10), 1);
+					nextPlacement[1] = 28;
+				}
+				if (nextPlacement[1] <= 28 && nextPlacement[1] >= 15) {
+					GOTO((4 * gameRound), 2 * nextPlacement[1] + 11);
+					drawDomino(next % 10, (int)(next / 10), 0);
+					nextPlacement[1]--;
+				}
+				edge1 = (int)(next / 10);
+			}
+		}
+	}
+	
+	if (currentPlayer == 2) {
+		for (int i = 0; i <= 27; i++) {
+			links = (int)(player2.domino[i] / 10);
+			rechts = (player2.domino[i] % 10);
+			if ((player2.domino[i] != -1) && ((links == edge1)  ||  (rechts == edge1)  ||  (links == edge2)  ||  (rechts == edge2))){
+				int j = 0;
+				while (possibleDominos[j] != -1) {
+					j++;
+				}
+				possibleDominos[j] = i;
+				printf("%d, ", i);
+			}
+		}
+		CURLEFT(2);
+		printf("  ");
+		
+		int ok = 0, i = 0;
+		while (ok != 1) {
+			GOTO(2, 42);
+			printf(" ");
+			CURLEFT(1);
+			scanf("%d", &next);
+			for (i = 0; i <= 27; i++) {
+				if (next == possibleDominos[i]) {
+					ok = 1;
+					GOTO(2, 42);
+					printf(" ");
+					player2.domino[next] = -1;
+					drawPlayerStack();
+				}
+			}
+			
+		}
+		if (edge1 == edge2) {
+			COMMAND;
+			printf("Wo soll angelegt werden?");
+			char choice = 'x';
+			while (choice != 'l' && choice != 'r') {
+				GOTO(2, 42);
+				scanf("%c", &choice);
+			}
+			switch (choice) {
+				case 'l':
+					drawDomino((int)(next / 10), (next % 10), 3);
+					break;
+				case 'r':
+					drawDomino((int)(next / 10), (next % 10), 3);
+					break;
+				default:
+					break;
+			}
+		}
+
+	}
 }

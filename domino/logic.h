@@ -19,7 +19,7 @@ struct Player initPlayer(int);
 void initGame(int[28]);
 void initNewRound(void);
 int *playRound(void);
-
+void nextTurn(int);
 
 
 #endif

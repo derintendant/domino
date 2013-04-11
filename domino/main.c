@@ -12,7 +12,7 @@
 #include "macros.h"
 #include "vars.h"
 
-int stack[28] = {0}, ergebnisGesamt[2][5] = {0}, *ergebnis;
+int stack[28] = {0}, ergebnisGesamt[2][5] = {0}, *ergebnis, edge1, edge2, gameRound, nextPlacement[2] = {6, 8};
 struct Player player1 = {.name = {0}, .score = 0, .domino = {0}};
 struct Player player2 = {.name = {0}, .score = 0, .domino = {0}};
 
@@ -27,24 +27,28 @@ int main(int argc, const char * argv[])
 	
 		// BEGIN Scoring
 	
+	gameRound = 1;
 	ergebnis = playRound();
 	ergebnisGesamt[0][0] += ergebnis[0];
 	ergebnisGesamt[0][4] += ergebnis[0];
 	ergebnisGesamt[1][0] += ergebnis[1];
 	ergebnisGesamt[1][4] += ergebnis[1];
 	
+	gameRound = 2;
 	ergebnis = playRound();
 	ergebnisGesamt[0][1] += ergebnis[0];
 	ergebnisGesamt[0][4] += ergebnis[0];
 	ergebnisGesamt[1][1] += ergebnis[1];
 	ergebnisGesamt[1][4] += ergebnis[1];
 	
+	gameRound = 3;
 	ergebnis = playRound();
 	ergebnisGesamt[0][2] += ergebnis[0];
 	ergebnisGesamt[0][4] += ergebnis[0];
 	ergebnisGesamt[1][2] += ergebnis[1];
 	ergebnisGesamt[1][4] += ergebnis[1];
 	
+	gameRound = 4;
 	ergebnis = playRound();
 	ergebnisGesamt[0][3] += ergebnis[0];
 	ergebnisGesamt[0][4] += ergebnis[0];

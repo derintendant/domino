@@ -16,6 +16,7 @@
 #define CURLEFT(x)		printf("\e[%dD", x)			// Cursor x Zeilen nach links verschieben
 #define CURRIGHT(x)		printf("\e[%dC", x)			// Cursor x Zeilen nach rechts verschieben
 #define GOTO(x,y)		printf("\e[%d;%dH", x, y)	// Cursor an Position (x,y) setzen
+#define COMMAND			printf("\e[18;1H")			// Cursor an Anfang der letzte Zeile setzen
 #define COLOR(x)		printf("\e[%dm", x)			/* Farben setzen:
 0  = default
 1  = fett

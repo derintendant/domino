@@ -11,5 +11,5 @@
 
 extern struct Player player1;
 extern struct Player player2;
-extern int stack[28], ergebnisGesamt[2][5], *ergebnis;
+extern int stack[28], ergebnisGesamt[2][5], *ergebnis, edge1, edge2, gameRound, nextPlacement[2];
 #endif
