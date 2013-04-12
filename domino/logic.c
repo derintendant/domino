@@ -112,7 +112,7 @@ void initNewRound(void) {
 	
 	GOTO((4 * gameRound - 2), 25);
 	COLOR(31);
-	drawDomino((int)(firstDomino / 10), firstDomino % 10, 0);
+	drawDomino((int)(firstDomino / 10), firstDomino % 10, 7);
 	edge1 = (int)(firstDomino / 10);
 	edge2 = (firstDomino % 10);
 }
@@ -144,7 +144,7 @@ int *playRound(void) {
 }
 
 void nextTurn(int currentPlayer) {
-	int next = -1, possibleDominos[28] = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, links, rechts;
+	int next = -1, possibleDominos[28] = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}, links, rechts, edge1New = -1, edge2New = -1;
 	COMMAND;
 	COLOR(32);
 	printf("Spieler %d: Welchen Stein legen?                   ", currentPlayer);
@@ -182,153 +182,8 @@ void nextTurn(int currentPlayer) {
 					drawPlayerStack();
 				}
 			}
-			
-		}
-		if (edge1 == edge2) {
-			COMMAND;
-			printf("Wo soll angelegt werden?");
-			char choice = 'x';
-			while (choice != 'l' && choice != 'r') {
-				GOTO(2, 42);
-				scanf("%c", &choice);
-			}
-			switch (choice) {
-				case 'l':
-					drawDomino((int)(next / 10), (next % 10), nextPlacement[0]);
-					if (nextPlacement[0] == 0) {
-						nextPlacement[0] = 28;
-					} else {
-						nextPlacement[0]--;
-					}
-					break;
-				case 'r':
-					drawDomino((int)(next / 10), (next % 10), nextPlacement[1]);
-					if (nextPlacement[1] == 28) {
-						nextPlacement[1] = 0;
-					} else {
-						nextPlacement[1]++;
-					}
-					break;
-				default:
-					break;
-			}
-		} else {
-			if ((int)(next / 10) == edge1 ) {
-				if (nextPlacement[0] > 0 && nextPlacement[0] < 7) {
-					GOTO((4 * gameRound -2), 2 * nextPlacement[0] + 11);
-					drawDomino(next % 10, (int)(next / 10), 0);
-					nextPlacement[0]--;
-				}
-				if (nextPlacement[0] > 7 && nextPlacement[0] < 14) {
-					GOTO((4 * gameRound -2), 2 * nextPlacement[0] + 11);
-					drawDomino((int)(next / 10), next % 10, 0);
-					nextPlacement[0]--;
-				}
-				if (nextPlacement[0] == 0) {
-					GOTO((4 * gameRound -2), 12);
-					drawDomino((int)(next / 10), (next % 10), 1);
-					nextPlacement[0] = 28;
-				}
-				if (nextPlacement[0] == 14) {
-					GOTO((4 * gameRound -2), 39);
-					drawDomino((next % 10), (int)(next / 10), 1);
-					nextPlacement[0] = 28;
-				}
-				if (nextPlacement[0] <= 28 && nextPlacement[0] >= 15) {
-					GOTO((4 * gameRound), (68 - 2 * nextPlacement[0]));
-					drawDomino(next % 10, (int)(next / 10), 0);
-					nextPlacement[0]--;
-				}
-				edge1 = next % 10;
-			}
-			if ((next % 10) == edge1 ) {
-				if (nextPlacement[0] > 0 && nextPlacement[0] < 7) {
-					GOTO((4 * gameRound -2), 2 * nextPlacement[0] + 11);
-					drawDomino((int)(next / 10), next % 10, 0);
-					nextPlacement[0]--;
-				}
-				if (nextPlacement[0] > 7 && nextPlacement[0] < 14) {
-					GOTO((4 * gameRound -2), 2 * nextPlacement[0] + 11);
-					drawDomino(next % 10, (int)(next / 10), 0);
-					nextPlacement[0]--;
-				}
-				if (nextPlacement[0] == 0) {
-					GOTO((4 * gameRound -2), 12);
-					drawDomino((next % 10), (int)(next / 10), 1);
-					nextPlacement[0] = 28;
-				}
-				if (nextPlacement[0] == 14) {
-					GOTO((4 * gameRound -2), 39);
-					drawDomino((int)(next / 10), (next % 10), 1);
-					nextPlacement[0] = 28;
-				}
-				if (nextPlacement[0] <= 28 && nextPlacement[0] >= 15) {
-					GOTO((4 * gameRound), 2 * nextPlacement[0] + 11);
-					drawDomino((int)(next / 10), next % 10, 0);
-					nextPlacement[0]--;
-				}
-				edge1 = (int)(next / 10);
-			}
-			
-			if ((int)(next / 10) == edge2 ) {
-				if (nextPlacement[1] > 0 && nextPlacement[1] < 7) {
-					GOTO((4 * gameRound -2), 2 * nextPlacement[1] + 11);
-					drawDomino((int)(next / 10), next % 10, 0);
-					nextPlacement[1]--;
-				}
-				if (nextPlacement[1] > 7 && nextPlacement[1] < 14) {
-					GOTO((4 * gameRound -2), 2 * nextPlacement[1] + 11);
-					drawDomino(next % 10, (int)(next / 10), 0);
-					nextPlacement[1]--;
-				}
-				if (nextPlacement[1] == 0) {
-					GOTO((4 * gameRound -2), 12);
-					drawDomino((next % 10), (int)(next / 10), 1);
-					nextPlacement[1] = 28;
-				}
-				if (nextPlacement[1] == 14) {
-					GOTO((4 * gameRound -2), 39);
-					drawDomino((int)(next / 10), (next % 10), 1);
-					nextPlacement[1] = 28;
-				}
-				if (nextPlacement[1] <= 28 && nextPlacement[1] >= 15) {
-					GOTO((4 * gameRound), (68 - 2 * nextPlacement[1]));
-					drawDomino((int)(next / 10), next % 10, 0);
-					nextPlacement[1]--;
-				}
-				edge1 = next % 10;
-			}
-			if ((next % 10) == edge2 ) {
-				if (nextPlacement[1] > 0 && nextPlacement[1] < 7) {
-					GOTO((4 * gameRound -2), 2 * nextPlacement[1] + 11);
-					drawDomino(next % 10, (int)(next / 10), 0);
-					nextPlacement[1]--;
-				}
-				if (nextPlacement[1] > 7 && nextPlacement[1] < 14) {
-					GOTO((4 * gameRound -2), 2 * nextPlacement[1] + 11);
-					drawDomino((int)(next / 10), next % 10, 0);
-					nextPlacement[1]--;
-				}
-				if (nextPlacement[1] == 0) {
-					GOTO((4 * gameRound -2), 12);
-					drawDomino((int)(next / 10), (next % 10), 1);
-					nextPlacement[1] = 28;
-				}
-				if (nextPlacement[1] == 14) {
-					GOTO((4 * gameRound -2), 39);
-					drawDomino((next % 10), (int)(next / 10), 1);
-					nextPlacement[1] = 28;
-				}
-				if (nextPlacement[1] <= 28 && nextPlacement[1] >= 15) {
-					GOTO((4 * gameRound), 2 * nextPlacement[1] + 11);
-					drawDomino(next % 10, (int)(next / 10), 0);
-					nextPlacement[1]--;
-				}
-				edge1 = (int)(next / 10);
-			}
 		}
 	}
-	
 	if (currentPlayer == 2) {
 		for (int i = 0; i <= 27; i++) {
 			links = (int)(player2.domino[i] / 10);
@@ -342,45 +197,171 @@ void nextTurn(int currentPlayer) {
 				printf("%d, ", i);
 			}
 		}
+		
 		CURLEFT(2);
 		printf("  ");
 		
 		int ok = 0, i = 0;
 		while (ok != 1) {
-			GOTO(2, 42);
+			GOTO(2, 50);
 			printf(" ");
 			CURLEFT(1);
 			scanf("%d", &next);
 			for (i = 0; i <= 27; i++) {
 				if (next == possibleDominos[i]) {
 					ok = 1;
-					GOTO(2, 42);
+					GOTO(2, 1);
 					printf(" ");
 					player2.domino[next] = -1;
 					drawPlayerStack();
 				}
 			}
+		}
+	}
+	if (edge1 == edge2) {
+		COMMAND;
+		printf("Wo soll angelegt werden?");
+		char choice = 'x';
+		while (choice != 'l' && choice != 'r') {
+			GOTO(2, (currentPlayer == 1 ? 1 : 49));
+			scanf("%c", &choice);
+		}
+		switch (choice) {
+			case 'l':
+				drawDomino((int)(next / 10), (next % 10), nextPlacement[0]);
+				if (nextPlacement[0] == 0) {
+					nextPlacement[0] = 28;
+				} else {
+					nextPlacement[0]--;
+				}
+				break;
+			case 'r':
+				drawDomino((int)(next / 10), (next % 10), nextPlacement[1]);
+				if (nextPlacement[1] == 28) {
+					nextPlacement[1] = 0;
+				} else {
+					nextPlacement[1]++;
+				}
+				break;
+			default:
+				break;
+		}
+	} else {
+		if ((int)(next / 10) == edge1 ) {
+			if (nextPlacement[0] == 0) {											// hochkant links
+				drawDomino((int)(next / 10), (next % 10), nextPlacement[0]);
+				nextPlacement[0] = 28;
+				edge1New = next % 10;
+			}
+			if (nextPlacement[0] == 14) {											// hochkant rechts
+				drawDomino((next % 10), (int)(next / 10), 14);
+				nextPlacement[0] = 13;
+				edge1New = next % 10;
+			}
+			if ((nextPlacement[0] > 0) && (nextPlacement[0] < 7)) {					// quer oben links
+				drawDomino((next % 10), (int)(next / 10), nextPlacement[0]);
+				nextPlacement[0]--;
+				edge1New = (int)(next / 10);
+			}
+			if ((nextPlacement[0] < 14) && (nextPlacement[0] > 7)) {				// quer oben rechts
+				drawDomino((next % 10), (int)(next / 10), nextPlacement[0]);
+				nextPlacement[0]--;
+				edge1New = next % 10;
+			}
+			if ((nextPlacement[0] < 29) && (nextPlacement[0] > 14)) {				// quer unten
+				drawDomino((int)(next / 10), (next % 10), nextPlacement[0]);
+				nextPlacement[0]--;
+				edge1New = next % 10;
+			}
+			goto hack1;
 			
 		}
-		if (edge1 == edge2) {
-			COMMAND;
-			printf("Wo soll angelegt werden?");
-			char choice = 'x';
-			while (choice != 'l' && choice != 'r') {
-				GOTO(2, 42);
-				scanf("%c", &choice);
+		if ((next % 10) == edge1 ) {
+			if (nextPlacement[0] == 0) {											// hochkant links
+				drawDomino((next % 10), (int)(next / 10), nextPlacement[0]);
+				nextPlacement[0] = 28;
+				edge1New = (int)(next / 10);
 			}
-			switch (choice) {
-				case 'l':
-					drawDomino((int)(next / 10), (next % 10), 3);
-					break;
-				case 'r':
-					drawDomino((int)(next / 10), (next % 10), 3);
-					break;
-				default:
-					break;
+			if (nextPlacement[0] == 14) {											// hochkant rechts
+				drawDomino((int)(next / 10), (next % 10), 14);
+				nextPlacement[0] = 13;
+				edge1New = (int)(next / 10);
 			}
+			if ((nextPlacement[0] > 0) && (nextPlacement[0] < 7)) {					// quer oben links
+				drawDomino((int)(next / 10), (next % 10), nextPlacement[0]);
+				nextPlacement[0]--;
+				edge1New = (int)(next / 10);
+			}
+			if ((nextPlacement[0] < 14) && (nextPlacement[0] > 7)) {				// quer oben rechts
+				drawDomino((int)(next / 10), (next % 10), nextPlacement[0]);
+				nextPlacement[0]--;
+				edge1New = next % 10;
+			}
+			if ((nextPlacement[0] < 29) && (nextPlacement[0] > 14)) {				// quer unten
+				drawDomino((int)(next / 10), (next % 10), nextPlacement[0]);
+				nextPlacement[0]--;
+				edge1New = next % 10;
+			}
+			goto hack1;
 		}
-
+		if ((int)(next / 10) == edge2 ) {
+			if (nextPlacement[0] == 0) {											// hochkant links
+				drawDomino((int)(next / 10), (next % 10), nextPlacement[1]);
+				nextPlacement[1] = 1;
+				edge2New = (int)(next / 10);
+			}
+			if (nextPlacement[1] == 14) {											// hochkant rechts
+				drawDomino((next % 10), (int)(next / 10), 14);
+				nextPlacement[1] = 15;
+				edge2New = (int)(next / 10);
+			}
+			if ((nextPlacement[1] > 0) && (nextPlacement[1] < 7)) {					// quer oben links
+				drawDomino((int)(next / 10), (next % 10), nextPlacement[1]);
+				nextPlacement[1]++;
+				edge2New = next % 10;
+			}
+			if ((nextPlacement[1] < 14) && (nextPlacement[1] > 7)) {				// quer oben rechts
+				drawDomino((int)(next / 10), (next % 10), nextPlacement[1]);
+				nextPlacement[1]++;
+				edge2New = (int)(next / 10);
+			}
+			if ((nextPlacement[1] < 29) && (nextPlacement[1] > 14)) {				// quer unten
+				drawDomino((next % 10), (int)(next / 10), nextPlacement[1]);
+				nextPlacement[1]++;
+				edge2New = (next % 10);
+			}
+			goto hack1;
+		}
+		if ((next % 10) == edge2 ) {
+			if (nextPlacement[1] == 0) {											// hochkant links
+				drawDomino((next % 10), (int)(next / 10), nextPlacement[1]);
+				nextPlacement[1] = 1;
+				edge2New = next % 10;
+			}
+			if (nextPlacement[1] == 14) {											// hochkant rechts
+				drawDomino((int)(next / 10), (next % 10), 14);
+				nextPlacement[1] = 15;
+				edge2New = next % 10;
+			}
+			if ((nextPlacement[1] > 0) && (nextPlacement[1] < 7)) {					// quer oben links
+				drawDomino((int)(next / 10), (next % 10), nextPlacement[1]);
+				nextPlacement[1]++;
+				edge2New = next % 10;
+			}
+			if ((nextPlacement[1] < 14) && (nextPlacement[1] > 7)) {				// quer oben rechts
+				drawDomino((int)(next / 10), (next % 10), nextPlacement[1]);
+				nextPlacement[1]++;
+				edge2New = next % 10;
+			}
+			if ((nextPlacement[1] < 29) && (nextPlacement[1] > 14)) {				// quer unten
+				drawDomino((next % 10), (int)(next / 10), nextPlacement[1]);
+				nextPlacement[1]++;
+				edge2New = next % 10;
+			}
+			goto hack1;
+		}
+		hack1:
+			edge1 = edge1New;
+			edge2 = edge2New;
 	}
 }
