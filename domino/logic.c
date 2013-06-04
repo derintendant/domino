@@ -14,6 +14,9 @@
 #include "vars.h"
 #include "drawing.h"
 
+int remainingDominos = 0;
+int player1DominoCount = 7, player2DominoCount = 7;
+
 struct Player initPlayer(int number) {
 	
 	struct Player player;
@@ -30,9 +33,9 @@ struct Player initPlayer(int number) {
 		scanf("%s", &player.name[0]);
 	}
 	GOTO(1, 11);
-	COLOR(30);
+	COLOR(1);
 	          printf("++++++++++++++++++++++++++++++\n");
-	printf("          +                            +         ");
+			  printf("          +                            +         ");
 	for (int i = 0; i <= 27; i++) {
 		player.domino[i] = -1;
 	}
@@ -124,7 +127,8 @@ int *playRound(void) {
 	if (gameRound == 2 || gameRound == 4) {
 		currentPlayer = 2;
 	}
-	while (1) {						// Abbruchbedingungen für Runde
+	remainingDominos = 28;
+	while (remainingDominos > 2 && player1DominoCount != 0 && player2DominoCount != 0) {						// Abbruchbedingungen für Runde
 		nextTurn(currentPlayer);
 		switch (currentPlayer) {
 			case 1:
@@ -137,8 +141,8 @@ int *playRound(void) {
 		}
 	}
 	
-	ergebnis[0] = 6;
-	ergebnis[1] = 8;
+	(player1DominoCount == 0) ? (ergebnis[0] = 5) : (ergebnis[0] = player1DominoCount * -1);
+	(player2DominoCount == 0) ? (ergebnis[1] = 5) : (ergebnis[1] = player2DominoCount * -1);
 	
 	return ergebnis;
 }
@@ -151,6 +155,8 @@ void nextTurn(int currentPlayer) {
 	CURLEFT(17);
 	
 	if (currentPlayer == 1) {
+		int dominosPossibleBool = 0;
+		int k = 1;
 		for (int i = 0; i <= 27; i++) {
 			links = (int)(player1.domino[i] / 10);
 			rechts = (player1.domino[i] % 10);
@@ -160,31 +166,50 @@ void nextTurn(int currentPlayer) {
 					j++;
 				}
 				possibleDominos[j] = i;
+				dominosPossibleBool = 1;
 				printf("%d, ", i);
+			}
+			while (k <= 3 && dominosPossibleBool == 0 && i == 27) {						// Nachziehen aus dem Stack
+				for (int c = 0; c <= 13; c++) {
+					if (player1.domino[c] == -1 && i == 27) {
+						int nextDominoIndex = ((int)random() % 26);
+						while (stack[nextDominoIndex] == -1) {
+							nextDominoIndex = ((int)random() % 26);
+						}
+						player1.domino[c] = stack[nextDominoIndex];
+						stack[nextDominoIndex] = -1;
+						i = 0;
+					}
+				}
+				drawPlayerStack();
+				k++;
 			}
 		}
 		
 		CURLEFT(2);
 		printf("  ");
 
-		int ok = 0, i = 0;
+		int ok = 0, i = 0, nextIndex = 0;
 		while (ok != 1) {			
 			GOTO(2, 1);
 			printf(" ");
 			CURLEFT(1);
-			scanf("%d", &next);
+			scanf("%d", &nextIndex);
+			next = player1.domino[nextIndex];
 			for (i = 0; i <= 27; i++) {
-				if (next == possibleDominos[i]) {
+				if (nextIndex == possibleDominos[i]) {
 					ok = 1;
 					GOTO(2, 1);
 					printf(" ");
-					player1.domino[next] = -1;
+					player1.domino[nextIndex] = -1;
 					drawPlayerStack();
 				}
 			}
 		}
 	}
 	if (currentPlayer == 2) {
+		int dominosPossibleBool = 0;
+		int k = 1;
 		for (int i = 0; i <= 27; i++) {
 			links = (int)(player2.domino[i] / 10);
 			rechts = (player2.domino[i] % 10);
@@ -194,25 +219,45 @@ void nextTurn(int currentPlayer) {
 					j++;
 				}
 				possibleDominos[j] = i;
+				dominosPossibleBool = 1;
 				printf("%d, ", i);
+			}
+			while (k <= 3 && dominosPossibleBool == 0 && i == 27) {						// Nachziehen aus dem Stack
+				for (int c = 0; c <= 13; c++) {
+					if (player2.domino[c] == -1 && i == 27) {
+						int nextDominoIndex = ((int)random() % 26);
+						while (stack[nextDominoIndex] == -1) {
+							nextDominoIndex = ((int)random() % 26);
+						}
+						player2.domino[c] = stack[nextDominoIndex];
+						stack[nextDominoIndex] = -1;
+						i = 0;
+					}
+				}
+				drawPlayerStack();
+				k++;
+				if (k == 3 && dominosPossibleBool == 0) {
+					return;
+				}
 			}
 		}
 		
 		CURLEFT(2);
 		printf("  ");
 		
-		int ok = 0, i = 0;
+		int ok = 0, i = 0, nextIndex = 0;
 		while (ok != 1) {
 			GOTO(2, 50);
 			printf(" ");
 			CURLEFT(1);
-			scanf("%d", &next);
+			scanf("%d", &nextIndex);
+			next = player2.domino[nextIndex];
 			for (i = 0; i <= 27; i++) {
-				if (next == possibleDominos[i]) {
+				if (nextIndex == possibleDominos[i]) {
 					ok = 1;
 					GOTO(2, 1);
 					printf(" ");
-					player2.domino[next] = -1;
+					player2.domino[nextIndex] = -1;
 					drawPlayerStack();
 				}
 			}
@@ -220,7 +265,7 @@ void nextTurn(int currentPlayer) {
 	}
 	if (edge1 == edge2) {
 		COMMAND;
-		printf("Wo soll angelegt werden?");
+		printf("Wo soll angelegt werden? r, l                             ");
 		char choice = 'x';
 		while (choice != 'l' && choice != 'r') {
 			GOTO(2, (currentPlayer == 1 ? 1 : 49));
@@ -228,7 +273,7 @@ void nextTurn(int currentPlayer) {
 		}
 		switch (choice) {
 			case 'l':
-				drawDomino((int)(next / 10), (next % 10), nextPlacement[0]);
+				drawDomino(DOMINO_LINKS, DOMINO_RECHTS, nextPlacement[0]);
 				if (nextPlacement[0] == 0) {
 					nextPlacement[0] = 28;
 				} else {
@@ -236,7 +281,7 @@ void nextTurn(int currentPlayer) {
 				}
 				break;
 			case 'r':
-				drawDomino((int)(next / 10), (next % 10), nextPlacement[1]);
+				drawDomino(DOMINO_RECHTS, DOMINO_LINKS, nextPlacement[1]);
 				if (nextPlacement[1] == 28) {
 					nextPlacement[1] = 0;
 				} else {
@@ -247,121 +292,137 @@ void nextTurn(int currentPlayer) {
 				break;
 		}
 	} else {
-		if ((int)(next / 10) == edge1 ) {
+		int turnOver = 1;
+		if (DOMINO_LINKS == edge1 && turnOver == 1) {
+			if ((nextPlacement[0] < 29) && (nextPlacement[0] > 14)) {				// quer unten
+				drawDomino(DOMINO_LINKS, DOMINO_RECHTS, nextPlacement[0]);
+				nextPlacement[0]--;
+				edge1 = DOMINO_RECHTS;
+			}
 			if (nextPlacement[0] == 0) {											// hochkant links
-				drawDomino((int)(next / 10), (next % 10), nextPlacement[0]);
+				drawDomino(DOMINO_LINKS, DOMINO_RECHTS, nextPlacement[0]);
 				nextPlacement[0] = 28;
-				edge1New = next % 10;
+				edge1 = DOMINO_RECHTS;
 			}
 			if (nextPlacement[0] == 14) {											// hochkant rechts
-				drawDomino((next % 10), (int)(next / 10), 14);
+				drawDomino(DOMINO_RECHTS, DOMINO_LINKS, 14);
 				nextPlacement[0] = 13;
-				edge1New = next % 10;
+				edge1 = DOMINO_RECHTS;
 			}
 			if ((nextPlacement[0] > 0) && (nextPlacement[0] < 7)) {					// quer oben links
-				drawDomino((next % 10), (int)(next / 10), nextPlacement[0]);
+				drawDomino(DOMINO_RECHTS, DOMINO_LINKS, nextPlacement[0]);
 				nextPlacement[0]--;
-				edge1New = (int)(next / 10);
+				edge1 = DOMINO_RECHTS;
 			}
 			if ((nextPlacement[0] < 14) && (nextPlacement[0] > 7)) {				// quer oben rechts
-				drawDomino((next % 10), (int)(next / 10), nextPlacement[0]);
+				drawDomino(DOMINO_RECHTS, DOMINO_LINKS, nextPlacement[0]);
 				nextPlacement[0]--;
-				edge1New = next % 10;
+				edge1 = DOMINO_RECHTS;
 			}
-			if ((nextPlacement[0] < 29) && (nextPlacement[0] > 14)) {				// quer unten
-				drawDomino((int)(next / 10), (next % 10), nextPlacement[0]);
-				nextPlacement[0]--;
-				edge1New = next % 10;
-			}
-			goto hack1;
-			
+			turnOver = 0;
 		}
-		if ((next % 10) == edge1 ) {
+		if (DOMINO_RECHTS == edge1 && turnOver == 1) {
+			if ((nextPlacement[0] < 29) && (nextPlacement[0] > 14)) {				// quer unten
+				drawDomino(DOMINO_LINKS, DOMINO_RECHTS, nextPlacement[0]);
+				nextPlacement[0]--;
+				edge1 = DOMINO_LINKS;
+			}
+
 			if (nextPlacement[0] == 0) {											// hochkant links
-				drawDomino((next % 10), (int)(next / 10), nextPlacement[0]);
+				drawDomino(DOMINO_RECHTS, DOMINO_LINKS, nextPlacement[0]);
 				nextPlacement[0] = 28;
-				edge1New = (int)(next / 10);
+				edge1 = DOMINO_LINKS;
 			}
 			if (nextPlacement[0] == 14) {											// hochkant rechts
-				drawDomino((int)(next / 10), (next % 10), 14);
+				drawDomino(DOMINO_LINKS, DOMINO_RECHTS, 14);
 				nextPlacement[0] = 13;
-				edge1New = (int)(next / 10);
+				edge1 = DOMINO_LINKS;
 			}
 			if ((nextPlacement[0] > 0) && (nextPlacement[0] < 7)) {					// quer oben links
-				drawDomino((int)(next / 10), (next % 10), nextPlacement[0]);
+				drawDomino(DOMINO_LINKS, DOMINO_RECHTS, nextPlacement[0]);
 				nextPlacement[0]--;
-				edge1New = (int)(next / 10);
+				edge1 = DOMINO_LINKS;
 			}
 			if ((nextPlacement[0] < 14) && (nextPlacement[0] > 7)) {				// quer oben rechts
-				drawDomino((int)(next / 10), (next % 10), nextPlacement[0]);
+				drawDomino(DOMINO_LINKS, DOMINO_RECHTS, nextPlacement[0]);
 				nextPlacement[0]--;
-				edge1New = next % 10;
-			}
-			if ((nextPlacement[0] < 29) && (nextPlacement[0] > 14)) {				// quer unten
-				drawDomino((int)(next / 10), (next % 10), nextPlacement[0]);
-				nextPlacement[0]--;
-				edge1New = next % 10;
-			}
-			goto hack1;
+				edge1 = DOMINO_LINKS;
+			}			turnOver = 0;
 		}
-		if ((int)(next / 10) == edge2 ) {
-			if (nextPlacement[0] == 0) {											// hochkant links
-				drawDomino((int)(next / 10), (next % 10), nextPlacement[1]);
-				nextPlacement[1] = 1;
-				edge2New = (int)(next / 10);
-			}
-			if (nextPlacement[1] == 14) {											// hochkant rechts
-				drawDomino((next % 10), (int)(next / 10), 14);
-				nextPlacement[1] = 15;
-				edge2New = (int)(next / 10);
-			}
-			if ((nextPlacement[1] > 0) && (nextPlacement[1] < 7)) {					// quer oben links
-				drawDomino((int)(next / 10), (next % 10), nextPlacement[1]);
-				nextPlacement[1]++;
-				edge2New = next % 10;
-			}
-			if ((nextPlacement[1] < 14) && (nextPlacement[1] > 7)) {				// quer oben rechts
-				drawDomino((int)(next / 10), (next % 10), nextPlacement[1]);
-				nextPlacement[1]++;
-				edge2New = (int)(next / 10);
-			}
+		if (DOMINO_LINKS == edge2 && turnOver == 1) {
 			if ((nextPlacement[1] < 29) && (nextPlacement[1] > 14)) {				// quer unten
-				drawDomino((next % 10), (int)(next / 10), nextPlacement[1]);
+				drawDomino(DOMINO_RECHTS, DOMINO_LINKS, nextPlacement[1]);
 				nextPlacement[1]++;
-				edge2New = (next % 10);
+				edge2 = DOMINO_RECHTS;
 			}
-			goto hack1;
-		}
-		if ((next % 10) == edge2 ) {
 			if (nextPlacement[1] == 0) {											// hochkant links
-				drawDomino((next % 10), (int)(next / 10), nextPlacement[1]);
+				drawDomino(DOMINO_LINKS, DOMINO_RECHTS, nextPlacement[1]);
 				nextPlacement[1] = 1;
-				edge2New = next % 10;
+				edge2 = DOMINO_RECHTS;
 			}
 			if (nextPlacement[1] == 14) {											// hochkant rechts
-				drawDomino((int)(next / 10), (next % 10), 14);
+				drawDomino(DOMINO_RECHTS, DOMINO_LINKS, 14);
 				nextPlacement[1] = 15;
-				edge2New = next % 10;
+				edge2 = DOMINO_RECHTS;
 			}
 			if ((nextPlacement[1] > 0) && (nextPlacement[1] < 7)) {					// quer oben links
-				drawDomino((int)(next / 10), (next % 10), nextPlacement[1]);
+				drawDomino(DOMINO_LINKS, DOMINO_RECHTS, nextPlacement[1]);
 				nextPlacement[1]++;
-				edge2New = next % 10;
+				edge2 = DOMINO_RECHTS;
 			}
 			if ((nextPlacement[1] < 14) && (nextPlacement[1] > 7)) {				// quer oben rechts
-				drawDomino((int)(next / 10), (next % 10), nextPlacement[1]);
+				drawDomino(DOMINO_LINKS, DOMINO_RECHTS, nextPlacement[1]);
 				nextPlacement[1]++;
-				edge2New = next % 10;
+				edge2 = DOMINO_RECHTS;
 			}
-			if ((nextPlacement[1] < 29) && (nextPlacement[1] > 14)) {				// quer unten
-				drawDomino((next % 10), (int)(next / 10), nextPlacement[1]);
-				nextPlacement[1]++;
-				edge2New = next % 10;
-			}
-			goto hack1;
+			turnOver = 0;
 		}
-		hack1:
-			edge1 = edge1New;
-			edge2 = edge2New;
+		if (DOMINO_RECHTS == edge2 && turnOver == 1) {
+			if ((nextPlacement[1] < 29) && (nextPlacement[1] > 14)) {				// quer unten
+				drawDomino(DOMINO_RECHTS, DOMINO_LINKS, nextPlacement[1]);
+				nextPlacement[1]++;
+				edge2 = DOMINO_LINKS;
+			}
+			if (nextPlacement[1] == 0) {											// hochkant links
+				drawDomino(DOMINO_RECHTS, DOMINO_LINKS, nextPlacement[1]);
+				nextPlacement[1] = 1;
+				edge2 = DOMINO_LINKS;
+			}
+			if (nextPlacement[1] == 14) {											// hochkant rechts
+				drawDomino(DOMINO_LINKS, DOMINO_RECHTS, 14);
+				nextPlacement[1] = 15;
+				edge2 = DOMINO_LINKS;
+			}
+			if ((nextPlacement[1] > 0) && (nextPlacement[1] < 7)) {					// quer oben links
+				drawDomino(DOMINO_LINKS, DOMINO_RECHTS, nextPlacement[1]);
+				nextPlacement[1]++;
+				edge2 = DOMINO_LINKS;
+			}
+			if ((nextPlacement[1] < 14) && (nextPlacement[1] > 7)) {				// quer oben rechts
+				drawDomino(DOMINO_RECHTS, DOMINO_LINKS, nextPlacement[1]);
+				nextPlacement[1]++;
+				edge2 = DOMINO_LINKS;
+			}
+		}
+	}
+	remainingDominos = 0;
+	for (int i = 0; i <= 27; i++) {
+		if (stack[i] != -1) {
+			remainingDominos++;
+		}
+	}
+	
+	player1DominoCount = 0;
+	for (int i = 0; i <= 13; i++) {
+		if (player1.domino[i] != -1) {
+			player1DominoCount++;
+		}
+	}
+	
+	player2DominoCount = 0;
+	for (int i = 0; i <= 13; i++) {
+		if (player2.domino[i] != -1) {
+			player2DominoCount++;
+		}
 	}
 }
